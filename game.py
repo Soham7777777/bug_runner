@@ -86,7 +86,9 @@ while True:
         player.update()
         jivda.update()
 
-        if pygame.sprite.spritecollide(player.sprite,jivda,False) : game_over = True
+        if pygame.sprite.spritecollide(player.sprite,jivda,False):
+            game_over = True
+            fail_sound.play()
 
         screen_surface.blit(ground_img_surf,(0,300))
         screen_surface.blit(sky_img_surf,(0,0))
