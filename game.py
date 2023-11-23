@@ -16,7 +16,7 @@ game_over = True
 
 pygame.init()
 screen_surface = pygame.display.set_mode((800,400))
-pygame.display.set_caption('lol game')
+pygame.display.set_caption('Bug Runner')
 font_obj = pygame.font.Font('assets/font/Pixeltype.ttf',50)
 clk = pygame.time.Clock()
 
