@@ -4,13 +4,10 @@ import pygame
 class Jivdu(pygame.sprite.Sprite):
     def __init__(self,type,animation_frame) -> None:
         super().__init__()
-        if type == 'maakhi':
-            self.animation_frames = animation_frame
-            y = 200
-        elif type == 'gokalgaai':
-            self.animation_frames = animation_frame
-            y = 300
-
+        if type == 'maakhi': y = 200
+        elif type == 'gokalgaai': y = 300
+        
+        self.animation_frames = animation_frame
         self.index = 0
         self.image = self.animation_frames[self.index]
         self.rect = self.image.get_rect(bottomleft=(randint(900,1500),y))
