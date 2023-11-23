@@ -6,6 +6,7 @@ from random import choices
 
 import player_script
 from jivda_script import Jivdu
+from background import Background
 
 # load resources
 datapath = os.path.join(os.path.dirname(__file__), './data/playerdata')
@@ -55,6 +56,8 @@ with shopen(datapath) as cupboard:
     cupboard.setdefault('highscore',highscore)
     highscore = cupboard['highscore']
 
+bg_group = pygame.sprite.Group(Background(ground_img_surf,(0,300),10),Background(ground_img_surf,(800,300),10), Background(sky_img_surf,(0,0),5),Background(sky_img_surf,(800,0),5))
+
 while True:
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
@@ -83,6 +86,7 @@ while True:
 
     if not game_over:
 
+        bg_group.update()
         player.update()
         jivda.update()
 
@@ -90,15 +94,13 @@ while True:
             game_over = True
             fail_sound.play()
 
-        screen_surface.blit(ground_img_surf,(0,300))
-        screen_surface.blit(sky_img_surf,(0,0))
+        bg_group.draw(screen_surface)
         player.draw(screen_surface)
         jivda.draw(screen_surface)
         score = show_score()
 
     else:
-        screen_surface.blit(ground_img_surf,(0,300))
-        screen_surface.blit(sky_img_surf,(0,0))
+        bg_group.draw(screen_surface)
         player_img_surf = pygame.image.load('assets/graphics/Player/player_stand.png').convert_alpha()
         player_surf = pygame.transform.rotozoom(player_img_surf,0,2)
         screen_surface.blit(player_surf,player_surf.get_rect(center=(400,170)))
