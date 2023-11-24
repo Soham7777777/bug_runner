@@ -1,8 +1,15 @@
 import pygame
+import neat
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self,animation_frames,jump_frame,jump_sound) -> None:
+class Robot(pygame.sprite.Sprite):
+    def __init__(self,id,DNA,settings,animation_frames,jump_frame,jump_sound) -> None:
         super().__init__()
+        self.id = id
+        self.DNA = DNA
+        self.settings = settings
+        self.brain = neat.nn.FeedForwardNetwork.create(DNA,settings) 
+        self.DNA.fitness = 0.0
+
         self.animation_frames = animation_frames
         self.jump_surf = jump_frame
         self.rect = self.animation_frames[0].get_rect(midbottom=(100,300))
@@ -29,8 +36,3 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.apply_gravity()
         self.animate()
-
-def reset(animation_frames,jump_frame,jump_sound):
-    player = pygame.sprite.GroupSingle()
-    player.add(Player(animation_frames,jump_frame,jump_sound))
-    return player
