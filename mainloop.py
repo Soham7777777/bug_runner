@@ -22,6 +22,7 @@ def play(AI_ENABLE):
                 game.AI_player.update(inputs)
                 if game.AI_player.sprite.output > 0.5 and game.AI_player.sprite.rect.bottom == 300:
                     game.AI_player.sprite.gravity = -15
+                    game.AI_player.sprite.jump_sound.play()
                 game.AI_player.draw(game.screen_surface)
 
 
