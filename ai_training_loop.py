@@ -73,6 +73,7 @@ def play(DNAs, settings):
             for robot in robots:
                 if robot.output > 0.5 and robot.rect.bottom==300:
                     robot.gravity = -15
+                    robot.jump_sound.play()
                 robot.DNA.fitness =  float(game.score)
                 robot.update(game.generate_input(robot))
                 
