@@ -2,6 +2,8 @@ import os
 import pygame
 from shelve import open as shopen
 import player_script
+from ai_body import Robot
+import neat
 
 from background import Background
 
@@ -39,6 +41,8 @@ class Game:
         player_jump_frame = pygame.image.load('assets/graphics/Player/jump.png').convert_alpha()
         player_jump_sound = pygame.mixer.Sound('assets/audio/jump.mp3')
         self.player_resources = player_animation_frames,player_jump_frame,player_jump_sound
+
+        self.AI_ENABLED = False
 
         fly_animation_frames = [pygame.image.load('assets/graphics/Fly/Fly1.png').convert_alpha(),pygame.image.load('assets/graphics/Fly/Fly2.png').convert_alpha()]
         snail_animation_frames = [pygame.image.load('assets/graphics/snail/snail1.png').convert_alpha(),pygame.image.load('assets/graphics/snail/snail2.png').convert_alpha()]
@@ -82,21 +86,23 @@ class Game:
         self.fail_sound.play()
         self.save_highscore()
     
+    def load_human(self):
+        self.player = player_script.reset(*self.player_resources)
+
     def set_playground(self):
         self.game_over = False
-        self.player = player_script.reset(*self.player_resources)
         self.jivda = pygame.sprite.Group()
         self.start_time = int(pygame.time.get_ticks()/1000)
         pygame.time.set_timer(self.point_timer,10000)
     
     def update_sprites(self):
         self.bg_group.update()
-        self.player.update()
+        if not self.AI_ENABLED: self.player.update()
         self.jivda.update()
     
     def draw_sprites(self):
         self.bg_group.draw(self.screen_surface)
-        self.player.draw(self.screen_surface)
+        if not self.AI_ENABLED : self.player.draw(self.screen_surface)
         self.jivda.draw(self.screen_surface)
         self.show_score()
     
@@ -105,3 +111,23 @@ class Game:
             self.highscore = self.score
             with shopen(self.datapath) as cupboard:
                 cupboard['highscore'] = self.highscore
+            
+    def load_AI(self):
+        AI = 0
+        with shopen('AI') as cupboard:
+            AI = cupboard['AI']
+        settings = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
+                         neat.DefaultSpeciesSet, neat.DefaultStagnation,
+                         os.path.join(os.path.dirname(__file__), 'AI_training_config.txt'))
+        self.AI_player = pygame.sprite.GroupSingle()
+        self.AI_player.add(Robot(1, AI, settings, *(self.player_resources)))
+    
+    def generate_input(self,robot):
+        inputs = robot.rect.bottom,-1,1
+        if len(self.jivda.sprites()):
+            obs = (self.jivda.sprites())[0]
+            d1 = obs.rect.x
+            d2 = obs.rect.y
+            inputs = robot.rect.bottom, d1, d2
+            pygame.draw.line(self.screen_surface,'red',robot.rect.topright,obs.rect.midleft)
+        return inputs

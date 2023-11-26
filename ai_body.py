@@ -18,6 +18,7 @@ class Robot(pygame.sprite.Sprite):
         self.gravity = 0
         self.jump_sound = jump_sound
         self.jump_sound.set_volume(0.5)
+        self.output = 0.0
 
     def animate(self):
         if self.rect.bottom < 300:
@@ -33,6 +34,10 @@ class Robot(pygame.sprite.Sprite):
         if self.rect.bottom > 300:
             self.rect.bottom = 300
 
-    def update(self):
+    def handle_input(self,inputs):
+        self.output = (self.brain.activate(inputs))[0]
+
+    def update(self,inputs):
+        self.handle_input(inputs)
         self.apply_gravity()
         self.animate()
