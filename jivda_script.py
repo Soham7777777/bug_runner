@@ -26,7 +26,7 @@ class Jivdu(pygame.sprite.Sprite):
         self.rect.x -= self.speed
 
     def destroy(self):
-        if self.rect.x <= -100 : self.kill()
+        if self.rect.x <= -10 : self.kill()
 
     def update(self):
         self.animate()
